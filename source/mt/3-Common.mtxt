@@ -1,0 +1,81 @@
+
+. Common functions
+
+~bin/ix2java.sh~
+function string_contains()
+{
+	local haystack="$1"
+	local needle="$2"
+	local tmp=`echo "$haystack" | sed "s|${needle}||g"`
+
+	if [ -z "$haystack" ]
+	then
+		return 1 # false
+
+	elif [ "$tmp" == "$haystack" ]
+	then
+		return 1 # false
+
+	else
+		return 0 # true
+	fi
+}
+
+function string_containsx()
+{
+	local haystack="$1"
+	local needle="$2"
+
+	if [ -z "$haystack" ]
+	then
+		if [ -z "$needed" ]
+		then
+			return 0 # success
+		else
+			return 1 # failure
+		fi
+
+	elif [ -z "$needle" ]
+	then
+		return 0 # success
+
+	elif [ -z "${haystack##*$needle*}" ]
+	then
+		return 0  # success
+
+	else
+		return -1 # failure
+
+	fi
+}
+~
+
+~bin/ix2java.sh~
+function string_starts_with()
+{
+    local haystack=$1
+    local prefix=$2
+
+    if [ "${haystack}" = "$prefix${haystack/$prefix}" ]
+    then
+        return 0  # success
+    else
+        return -1 # failure
+    fi
+}
+~
+
+~bin/ix2java.sh~
+function string_ends_with()
+{
+	local haystack=$1
+	local suffix=$2
+
+    if [ "${haystack}" = "${haystack/$suffix}${suffix}" ]
+	then
+		return 0  # success
+	else
+		return -1 # failure
+	fi
+}
+~

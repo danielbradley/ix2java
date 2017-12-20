@@ -1,0 +1,11 @@
+
+. Introduction
+
+Ix2Java is only intended to provide enough functionality to bootstrap the process of developing a fully functional Ix compiler in the Ix programming language.
+As the Ix programming language shares some syntactic and semetic similarities with Java,
+it is possible to easily convert between Ix source code and Java source code.
+Thus this tool allows the development of a more advanced compiler written in Ix,
+which will be converted to Java using this tool for compilation using the Java compiler,
+resulting in a compiler that can compile Ix source code to C,
+which will allow our Ix compiler to be converted to C and compiled using a C compiler.
+

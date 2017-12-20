@@ -1,0 +1,15 @@
+. Startup
+
+If no parameters or multiple parameters are passed,
+call usage and exit with a fail;
+otherwise, call main and pass $1.
+
+~bin/ix2java.sh~
+if [ "$#" != "1" ]
+then
+	usage
+	exit -1
+else
+	main "$1"
+fi
+~

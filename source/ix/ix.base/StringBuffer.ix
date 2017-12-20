@@ -1,0 +1,51 @@
+
+Copyright 2012, Daniel Bradley. All rights reserved.
+
+License: LGPLv2.
+
+public class extends Object {
+{
+	@data : char[];
+}
+
+public new()
+{
+	@data = new char[];
+}
+
+public append( ch : char )
+{
+	@data[] = ch;
+}
+
+public append( aString : string& )
+{
+	foreach( character in aString )
+	{
+		@data[] = character;
+	}
+}
+
+public append( aString : string* )
+{
+	foreach( character in aString )
+	{
+		@data[] = character;
+	}
+	delete aString;
+}
+
+public append( aValue : float )
+{
+	this.append( Number.convertToString( aValue ) );
+}
+
+public const charAt( i : integer ) : char
+{
+	return @data[i];
+}
+
+public const getLength() : integer
+{
+	return @data.length;
+}

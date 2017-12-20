@@ -1,0 +1,168 @@
+
+. Implementation
+
+The initital implementation of Ix2Java is implemented using Bash scripting and unix utilities.
+
+~!bin/ix2java.sh~
+#!/bin/bash
+~
+
+.. Usage
+
+As Java classes can be compiled into class files individually,
+this tool need only convert between a single Ix source file and a Java '.java' file.
+The tools takes a single Ix source file as its sole command line argument,
+and outputs the resulting Java source file to standard out.
+
+~bin/ix2java.sh~
+function usage()
+{
+	echo "Usage: ix2java <ix source file>"
+}
+~
+
+.. Main
+
+~bin/ix2java.sh~
+function main()
+{
+	local filepath=$1
+	local filename=`basename "$filepath" .ix`
+
+	local cpyrght=`extract_cpyrght "$filepath"`
+	local license=`extract_license "$filepath"`
+	local package=`extract_package "$filepath"`
+	local imports=`extract_imports "$filepath"`
+	local extends=`extract_extends "$filepath"`
+	local members=`extract_members "$filepath"`
+	local methods=`extract_methods "$filepath"`
+
+	echo "${cpyrght}"
+	echo "${license}"
+	echo
+	echo "${imports}"
+	echo
+	echo "class $filename $extends {"
+	echo
+	echo "$members"
+	echo
+	echo "$methods"
+	echo
+	echo "}"
+}
+~
+
+... Extract superclass
+
+~bin/ix2java.sh~
+function extract_cpyrght()
+{
+	local copyright=`cat "$1" | grep "Copyright"`
+
+	if [ -n "$copyright" ]
+	then
+		echo "/*"
+		echo " *  $copyright"
+		echo " */"
+	fi
+}
+~
+
+~bin/ix2java.sh~
+function extract_license()
+{
+	local license=`cat "$1" | grep "License"`
+
+	if [ -n "$license" ]
+	then
+		echo "/*"
+		echo " *  $license"
+		echo " */"
+	fi
+}
+~
+
+~bin/ix2java.sh~
+function extract_package()
+{
+	local path=`dirname "$1"`
+	local namespace=`basename "$path"`
+
+	if [ -n "$namespace" ]
+	then
+		echo "package $namespace;"
+	fi
+}
+~
+
+~bin/ix2java.sh~
+function extract_imports()
+{
+	echo "import java.util.*;"
+}
+~
+
+~bin/ix2java.sh~
+function extract_extends()
+{
+	local extends=`cat $1 | grep "extends" | sed 's/public//' | sed 's/class//' | sed 's/extends//' | sed 's/{//'`
+
+	if [ -n "${extends}" ]
+	then
+		extends="extends ${extends}"
+	fi
+
+	echo $extends
+}
+~
+
+~bin/ix2java.sh~
+function extract_members()
+{
+	local state="outside"
+
+	while read -r line
+	do
+		if string_contains "$line" "class"
+		then
+			state="inside"
+
+		elif string_contains "$line" "{"
+		then
+			continue
+
+		elif string_contains "$line" "}"
+		then
+			break
+
+		elif [ "$state" == "inside" ]
+		then
+			local name=`extract_word "$line" 1`
+			local type=`extract_word "$line" 2`
+
+			echo "$type $name;"
+		fi
+	done < $1
+}
+~
+
+~bin/ix2java.sh~
+function extract_word()
+{
+	local line="$1"
+	local word="$2"
+
+	echo "$line" | sed "s/<TAB>//g" | sed 's/ //g' | sed 's/@//g' | sed 's/;//g' | cut -d : -f $word
+}
+~
+
+~bin/ix2java.sh~
+function extract_methods()
+{
+	echo
+}
+~
+
+
+
+
